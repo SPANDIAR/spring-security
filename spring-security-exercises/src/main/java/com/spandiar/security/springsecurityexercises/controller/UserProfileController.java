@@ -1,6 +1,9 @@
 package com.spandiar.security.springsecurityexercises.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +20,8 @@ public class UserProfileController {
 	
 	@Autowired
 	private UserProfileService userProfileService;
+	@Autowired
+	private AuthenticationManager authManager;
 	
 	@GetMapping("/about")
 	public String about() {
@@ -45,10 +50,21 @@ public class UserProfileController {
 		
 	}
 	
+	@PostMapping("/authenticate")
+	public Authentication authenticateCredentials(@RequestBody UserProfile userCredentials) {
+		try {
+			Authentication authenticate = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserName(), userCredentials.getPassword()));
+			return authenticate;
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+	
 	@GetMapping("/crypto/{stringToEncrypt}")
 	public String passwordCrypto(@PathVariable("stringToEncrypt") String stringToEncrypt) {
 		
 		return userProfileService.cryptoService(stringToEncrypt);
 	}
+	
 
 }
