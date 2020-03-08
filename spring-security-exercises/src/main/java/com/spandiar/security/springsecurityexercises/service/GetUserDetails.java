@@ -26,7 +26,7 @@ public class GetUserDetails implements UserDetails{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String userName;
+	private String username;
 	private String password;
 	private boolean accountNonExpired;
 	private boolean accountNonLocked;
@@ -46,7 +46,7 @@ public class GetUserDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return userName;
+		return username;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class GetUserDetails implements UserDetails{
 
 	public UserDetails GetUserDetailsByUserName(UserProfile returnUserProfile) {
 		
-		this.userName = returnUserProfile.getUserName();
+		this.username = returnUserProfile.getUserName();
 		this.password = returnUserProfile.getPassword();
 		this.accountNonExpired = !(returnUserProfile.isAccountExpired());
 		this.accountNonLocked = !(returnUserProfile.isAccountLocked());

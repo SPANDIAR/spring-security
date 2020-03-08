@@ -1,6 +1,8 @@
 package com.spandiar.security.springsecurityexercises.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,7 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spandiar.security.springsecurityexercises.model.AuthenticateUserRequest;
+import com.spandiar.security.springsecurityexercises.model.AuthenticateUserResponse;
+
 import com.spandiar.security.springsecurityexercises.model.UserProfile;
+import com.spandiar.security.springsecurityexercises.service.GetUserDetails;
 import com.spandiar.security.springsecurityexercises.service.UserProfileService;
 
 @RestController
@@ -51,12 +57,19 @@ public class UserProfileController {
 	}
 	
 	@PostMapping("/authenticate")
-	public Authentication authenticateCredentials(@RequestBody UserProfile userCredentials) {
+	public ResponseEntity<AuthenticateUserResponse> authenticateCredentials(@RequestBody AuthenticateUserRequest userCredentials) {
 		try {
-			Authentication authenticate = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserName(), userCredentials.getPassword()));
-			return authenticate;
+			
+			Authentication authenticateResponse = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserName(), userCredentials.getPassword()));
+			AuthenticateUserResponse userDetails = userProfileService.loginUserDetails(authenticateResponse);
+			return new ResponseEntity(userDetails, HttpStatus.OK);
+			
 		} catch (Exception ex) {
-			return null;
+			
+			AuthenticateUserResponse response = new AuthenticateUserResponse();
+			response.setMessage("Invalid Credentials");
+			
+			return new ResponseEntity(response, HttpStatus.FORBIDDEN);
 		}
 	}
 	

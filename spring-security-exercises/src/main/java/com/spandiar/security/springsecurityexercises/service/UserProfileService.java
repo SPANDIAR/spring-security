@@ -1,13 +1,20 @@
 package com.spandiar.security.springsecurityexercises.service;
 
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.spandiar.security.springsecurityexercises.dao.UserProfileDao;
+import com.spandiar.security.springsecurityexercises.model.AuthenticateUserRequest;
+import com.spandiar.security.springsecurityexercises.model.AuthenticateUserResponse;
 import com.spandiar.security.springsecurityexercises.model.UserProfile;
 
 @Service
@@ -51,6 +58,20 @@ public class UserProfileService {
 	public String cryptoService(String stringToEncrypt) {
 		String encryptedString = passwordEncoder.encode(stringToEncrypt);
 		return (stringToEncrypt + " - " + encryptedString + " - " + passwordEncoder.getClass().getName());
+	}
+	
+	public AuthenticateUserResponse loginUserDetails(Authentication authenticateResponse) {
+		
+		GetUserDetails userDetails = new GetUserDetails();
+		AuthenticateUserResponse loginUserDetails = new AuthenticateUserResponse();
+		userDetails = (GetUserDetails) authenticateResponse.getPrincipal();
+		
+		loginUserDetails.setUsername(userDetails.getUsername());
+		loginUserDetails.setAuthorities(userDetails.getAuthorities());
+		loginUserDetails.setMessage("Successful login");
+		
+		return loginUserDetails;
+		
 	}
 
 }
