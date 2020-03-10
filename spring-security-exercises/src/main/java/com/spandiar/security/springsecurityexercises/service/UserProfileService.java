@@ -43,10 +43,9 @@ public class UserProfileService {
 		createUserRequest.setAccountExpired(false);
 		createUserRequest.setAccountLocked(false);
 		createUserRequest.setCredentialsExpired(false);
-		createUserRequest.setPasswordExpired(false);
 		createUserRequest.setLastModifiedBy("system");
 		createUserRequest.setLastModifiedDate(Calendar.getInstance());
-		createUserRequest.getRoleUser().forEach(user -> user.setUserName(createUserRequest.getUserName()));
+		createUserRequest.getRoleUser().forEach(user -> user.setUserId(createUserRequest.getUserId()));
 		createUserRequest.getRoleUser().forEach(user->user.setLastModifiedBy("system"));
 		createUserRequest.getRoleUser().forEach(user->user.setLastModifiedDate(Calendar.getInstance()));
 		

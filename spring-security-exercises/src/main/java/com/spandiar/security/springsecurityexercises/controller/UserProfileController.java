@@ -59,14 +59,14 @@ public class UserProfileController {
 	public ResponseEntity<AuthenticateUserResponse> authenticateCredentials(@RequestBody AuthenticateUserRequest userCredentials) {
 		try {
 			
-			Authentication authenticateResponse = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserName(), userCredentials.getPassword()));
+			Authentication authenticateResponse = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserId(), userCredentials.getPassword()));
 			AuthenticateUserResponse userDetails = userProfileService.loginUserDetails(authenticateResponse);
 			return new ResponseEntity<AuthenticateUserResponse>(userDetails, HttpStatus.OK);
 			
 		} catch (Exception ex) {
 			
 			AuthenticateUserResponse response = new AuthenticateUserResponse();
-			response.setMessage("Invalid Credentials");
+			response.setMessage(ex.getMessage());
 			
 			return new ResponseEntity<AuthenticateUserResponse>(response, HttpStatus.FORBIDDEN);
 		}
