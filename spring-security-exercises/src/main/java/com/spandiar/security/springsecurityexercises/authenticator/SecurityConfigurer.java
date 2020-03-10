@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
@@ -67,13 +68,13 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter{
 		
 		
 		  http.authorizeRequests() 
-			  .antMatchers("/api/site/admin").hasRole("ADMIN")
-			  .antMatchers("/api/site/user").hasAnyRole("USER", "ADMIN")
-			  .antMatchers("/api/site/wifey").hasRole("WIFEY")
-			  .antMatchers("/api/site/about").permitAll()
-			  .antMatchers("/api/userprofile/*").permitAll()
-			  .antMatchers("/*").permitAll() 
-			  .and() 
+				  .antMatchers("/api/site/admin").hasRole("ADMIN")
+				  .antMatchers("/api/site/user").hasAnyRole("USER", "ADMIN")
+				  .antMatchers("/api/site/wifey").hasRole("WIFEY")
+				  .antMatchers("/api/site/about").permitAll()
+				  .antMatchers("/api/userprofile/*").permitAll() 
+				  .antMatchers("/*").permitAll()
+			  .and()
 			  .formLogin()
 			  .and()
 			  .csrf().disable();

@@ -17,7 +17,6 @@ import com.spandiar.security.springsecurityexercises.model.AuthenticateUserReque
 import com.spandiar.security.springsecurityexercises.model.AuthenticateUserResponse;
 
 import com.spandiar.security.springsecurityexercises.model.UserProfile;
-import com.spandiar.security.springsecurityexercises.service.GetUserDetails;
 import com.spandiar.security.springsecurityexercises.service.UserProfileService;
 
 @RestController
@@ -62,14 +61,14 @@ public class UserProfileController {
 			
 			Authentication authenticateResponse = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredentials.getUserName(), userCredentials.getPassword()));
 			AuthenticateUserResponse userDetails = userProfileService.loginUserDetails(authenticateResponse);
-			return new ResponseEntity(userDetails, HttpStatus.OK);
+			return new ResponseEntity<AuthenticateUserResponse>(userDetails, HttpStatus.OK);
 			
 		} catch (Exception ex) {
 			
 			AuthenticateUserResponse response = new AuthenticateUserResponse();
 			response.setMessage("Invalid Credentials");
 			
-			return new ResponseEntity(response, HttpStatus.FORBIDDEN);
+			return new ResponseEntity<AuthenticateUserResponse>(response, HttpStatus.FORBIDDEN);
 		}
 	}
 	
