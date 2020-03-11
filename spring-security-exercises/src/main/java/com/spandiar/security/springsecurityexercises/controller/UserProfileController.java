@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spandiar.security.springsecurityexercises.model.AuthenticateUserRequest;
 import com.spandiar.security.springsecurityexercises.model.AuthenticateUserResponse;
-
+import com.spandiar.security.springsecurityexercises.model.CreateUserRequestResponse;
 import com.spandiar.security.springsecurityexercises.model.UserProfile;
 import com.spandiar.security.springsecurityexercises.service.UserProfileService;
 
@@ -46,13 +46,15 @@ public class UserProfileController {
 	}
 	
 	@PostMapping("/createuser")
-	public void createUser(@RequestBody UserProfile createUserRequest) {
+	public ResponseEntity<CreateUserRequestResponse> createUser(@RequestBody CreateUserRequestResponse createUserRequest) {
 		try {
-			userProfileService.createUserProfile(createUserRequest);
+				CreateUserRequestResponse userDetailFromDAO = userProfileService.createUserProfile(createUserRequest);
+				return new ResponseEntity(userDetailFromDAO, HttpStatus.OK);
 		}catch (Exception e) {
-			System.out.println("Error");
+			CreateUserRequestResponse userDetailFromDAO = new CreateUserRequestResponse();
+			userDetailFromDAO.setDetails(e.getMessage());
+			return new ResponseEntity(userDetailFromDAO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
 	}
 	
 	@PostMapping("/authenticate")

@@ -48,12 +48,12 @@ public class UserProfile {
 	private String lastModifiedBy;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name="USERID")
-	private List<roleUser> roleUser;
+	private List<RoleUser> roleUser;
 	
 	@Entity
 	@Table(name="ROLEUSER")
 	@IdClass(UserRoleId.class)
-	public static class roleUser {
+	public static class RoleUser {
 		@Id
 		@Column(name="USERID")
 		private String userId;
@@ -92,9 +92,17 @@ public class UserProfile {
 		public void setLastModifiedBy(String lastModifiedBy) {
 			this.lastModifiedBy = lastModifiedBy;
 		}
-		public roleUser() {
+		public RoleUser() {
 			super();
 			// TODO Auto-generated constructor stub
+		}
+		
+		public RoleUser(String userId, String roleName, Calendar lastModifiedDate, String lastModifiedBy) {
+			super();
+			this.userId = userId;
+			this.roleName = roleName;
+			this.lastModifiedDate = lastModifiedDate;
+			this.lastModifiedBy = lastModifiedBy;
 		}
 		
 	}
@@ -180,11 +188,11 @@ public class UserProfile {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	public List<roleUser> getRoleUser() {
+	public List<RoleUser> getRoleUser() {
 		return roleUser;
 	}
 
-	public void setRoleUser(List<roleUser> roleUser) {
+	public void setRoleUser(List<RoleUser> roleUser) {
 		this.roleUser = roleUser;
 	}
 

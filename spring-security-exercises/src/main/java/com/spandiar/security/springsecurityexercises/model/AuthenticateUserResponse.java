@@ -18,23 +18,6 @@ public class AuthenticateUserResponse {
 	private String credentialsNonExpired;
 	private String message;
 	private Collection<GrantedAuthority> authority;
-	
-	static class Authorities {
-		private String authorities;
-
-		public String getAuthorities() {
-			return authorities;
-		}
-
-		public void setAuthorities(String authorities) {
-			this.authorities = authorities;
-		}
-
-		public Authorities() {
-			
-		}
-		
-	}
 
 	public String getUsername() {
 		return username;
