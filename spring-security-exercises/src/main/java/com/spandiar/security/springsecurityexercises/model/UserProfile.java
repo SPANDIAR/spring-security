@@ -26,14 +26,16 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class UserProfile {
 	
 	@Id
+	@Column(name="USERID")
+	private String userId;
 	@Column(name="USERNAME")
 	private String userName;
 	@Column(name="PASSWORD")
 	private String password;
+	@Column(name="EMAIL")
+	private String email;
 	@Column(name="ISACTIVE")
 	private boolean isActive;
-	@Column(name="ISPASSWORDEXPIRED")
-	private boolean isPasswordExpired;
 	@Column(name="ISACCOUNTEXPIRED")
 	private boolean isAccountExpired;
 	@Column(name="ISACCOUNTLOCKED")
@@ -45,16 +47,16 @@ public class UserProfile {
 	@Column(name="LASTMODIFIEDBY")
 	private String lastModifiedBy;
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@JoinColumn(name="USERNAME")
-	private List<roleUser> roleUser;
+	@JoinColumn(name="USERID")
+	private List<RoleUser> roleUser;
 	
 	@Entity
 	@Table(name="ROLEUSER")
 	@IdClass(UserRoleId.class)
-	public static class roleUser {
+	public static class RoleUser {
 		@Id
-		@Column(name="USERNAME")
-		private String userName;
+		@Column(name="USERID")
+		private String userId;
 		@Id
 		@Column(name="ROLENAME")
 		private String roleName;
@@ -65,11 +67,12 @@ public class UserProfile {
 		@JsonIgnore
 		private String lastModifiedBy;
 		
-		public String getUserName() {
-			return userName;
+		
+		public String getUserId() {
+			return userId;
 		}
-		public void setUserName(String userName) {
-			this.userName = userName;
+		public void setUserId(String userId) {
+			this.userId = userId;
 		}
 		public String getRoleName() {
 			return roleName;
@@ -89,11 +92,36 @@ public class UserProfile {
 		public void setLastModifiedBy(String lastModifiedBy) {
 			this.lastModifiedBy = lastModifiedBy;
 		}
-		public roleUser() {
+		public RoleUser() {
 			super();
 			// TODO Auto-generated constructor stub
 		}
 		
+		public RoleUser(String userId, String roleName, Calendar lastModifiedDate, String lastModifiedBy) {
+			super();
+			this.userId = userId;
+			this.roleName = roleName;
+			this.lastModifiedDate = lastModifiedDate;
+			this.lastModifiedBy = lastModifiedBy;
+		}
+		
+	}
+	
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getUserName() {
@@ -118,14 +146,6 @@ public class UserProfile {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
-	}
-
-	public boolean isPasswordExpired() {
-		return isPasswordExpired;
-	}
-
-	public void setPasswordExpired(boolean isPasswordExpired) {
-		this.isPasswordExpired = isPasswordExpired;
 	}
 
 	public boolean isAccountExpired() {
@@ -168,11 +188,11 @@ public class UserProfile {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 
-	public List<roleUser> getRoleUser() {
+	public List<RoleUser> getRoleUser() {
 		return roleUser;
 	}
 
-	public void setRoleUser(List<roleUser> roleUser) {
+	public void setRoleUser(List<RoleUser> roleUser) {
 		this.roleUser = roleUser;
 	}
 

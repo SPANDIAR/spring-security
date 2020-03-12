@@ -71,7 +71,7 @@ public class GetUserDetails implements UserDetails{
 
 	public UserDetails GetUserDetailsByUserName(UserProfile returnUserProfile) {
 		
-		this.username = returnUserProfile.getUserName();
+		this.username = returnUserProfile.getUserId();
 		this.password = returnUserProfile.getPassword();
 		this.accountNonExpired = !(returnUserProfile.isAccountExpired());
 		this.accountNonLocked = !(returnUserProfile.isAccountLocked());

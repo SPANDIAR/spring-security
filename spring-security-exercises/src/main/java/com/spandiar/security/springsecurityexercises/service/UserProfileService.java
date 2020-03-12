@@ -1,6 +1,11 @@
 package com.spandiar.security.springsecurityexercises.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,7 +15,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.spandiar.security.springsecurityexercises.dao.UserProfileDao;
 import com.spandiar.security.springsecurityexercises.model.AuthenticateUserResponse;
+import com.spandiar.security.springsecurityexercises.model.CreateUserRequestResponse;
 import com.spandiar.security.springsecurityexercises.model.UserProfile;
+import com.spandiar.security.springsecurityexercises.model.UserProfile.RoleUser;
 
 @Service
 public class UserProfileService {
@@ -19,14 +26,21 @@ public class UserProfileService {
 	private UserProfileDao userProfileDao;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private ApplicationUserDetails appUserDetails;
 	
-	public void createUserProfile(final UserProfile createUserRequest) {
+	public CreateUserRequestResponse createUserProfile(final CreateUserRequestResponse createUserRequest) {
 		
-		enrichCreateUserProfile(createUserRequest);
-		userProfileDao.createUserProfile(createUserRequest);
+		CreateUserRequestResponse createUserResponse = new CreateUserRequestResponse();
+		UserProfile createUser = enrichCreateUserProfile(createUserRequest);
+		userProfileDao.createUserProfile(createUser);
 		
+		if(!(userProfileDao.returnUserProfile(createUserRequest.getUserId()).getUserId().isEmpty())) {
+			createUserResponse.setUserId(createUserRequest.getUserId());
+			createUserResponse.setDetails("Success");
+		} else {
+			createUserResponse.setDetails("Failed");
+		};
+		
+		return createUserResponse;
 	}
 	
 	public UserProfile returnUserProfile(final String userId) {
@@ -36,20 +50,39 @@ public class UserProfileService {
 		return returnUserProfile;
 	}
 	
-	public void enrichCreateUserProfile(final UserProfile createUserRequest) {
+	public UserProfile enrichCreateUserProfile(final CreateUserRequestResponse createUserRequest) {
 		
-		createUserRequest.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
-		createUserRequest.setActive(true);
-		createUserRequest.setAccountExpired(false);
-		createUserRequest.setAccountLocked(false);
-		createUserRequest.setCredentialsExpired(false);
-		createUserRequest.setPasswordExpired(false);
-		createUserRequest.setLastModifiedBy("system");
-		createUserRequest.setLastModifiedDate(Calendar.getInstance());
-		createUserRequest.getRoleUser().forEach(user -> user.setUserName(createUserRequest.getUserName()));
-		createUserRequest.getRoleUser().forEach(user->user.setLastModifiedBy("system"));
-		createUserRequest.getRoleUser().forEach(user->user.setLastModifiedDate(Calendar.getInstance()));
+		UserProfile createUser = new UserProfile();
+		List<RoleUser> roleUserList = new ArrayList();
 		
+		createUser.setUserId(createUserRequest.getUserId());
+		createUser.setUserName(createUserRequest.getUserName());
+		createUser.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+		createUser.setEmail(createUserRequest.getEmail());
+		createUser.setActive(true);
+		createUser.setAccountExpired(false);
+		createUser.setAccountLocked(false);
+		createUser.setCredentialsExpired(false);
+		createUser.setLastModifiedBy("system");
+		createUser.setLastModifiedDate(Calendar.getInstance());
+		
+		Iterator<RoleUser> iterator = createUserRequest.getRoleUser().iterator();
+		
+		 while (iterator.hasNext()) {
+			 RoleUser next = iterator.next();
+			 RoleUser roleUser = createRoleUser(createUserRequest.getUserId(), next.getRoleName());
+			 roleUserList.add(roleUser);
+		 }
+		 
+		 createUser.setRoleUser(roleUserList);
+		 
+		 return createUser;
+	}
+	
+	private static RoleUser createRoleUser(String userId, String roleName) {
+		
+		RoleUser roleUser = new RoleUser(userId, roleName, Calendar.getInstance(), "system");
+		return roleUser;
 	}
 	
 	public String cryptoService(String stringToEncrypt) {
